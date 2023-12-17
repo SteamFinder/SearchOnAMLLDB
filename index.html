@@ -293,6 +293,7 @@
             const details_name = document.getElementById('m-name');
             const details_audio = document.getElementById('m-audio');
             const details_links = document.getElementById('m-links');
+            const details_2gh = document.getElementById('m-2gh');
             fetch('https://autumnfish.cn/song/detail?ids=' + music_id)
                 .then(response => response.json())
                 .then(data => {
@@ -302,8 +303,10 @@
                     current_pic = data.songs[0].al.picUrl;
                     // console.log('fetch:' + amll_data[i] + ' ' + name);
                     details_pic.innerHTML = "<img src=\" " + current_pic + "\" width=\"100vh\" />";
-                    details_singer.innerHTML = current_singer;
+                    details_singer.innerHTML = current_singer + '<br>' + music_id;
                     details_name.innerHTML = current_name;
+                    details_2gh.innerHTML = '<button type=\"button\" class=\"btn btn-outline-primary btn-block\" onclick=\"window.location.href=\'https://github.com/Steve-xmh/amll-ttml-db/blob/main/lyrics/' + music_id + '.ttml\'\">Github歌词</button>';
+                    details_title.innerHTML = '歌曲详情 ' + current_name + ' ' + music_id;
                 });
             // details_title.innerHTML = music_id;
             // details_body.innerHTML = music_id;
@@ -409,7 +412,7 @@
         </div>
         <div class="row">
             <hr>
-            <small style="font-weight: bold;">1.2 - 231217</small>
+            <small style="font-weight: bold;">1.3 - 231217</small>
             <small>
                 Powered by Bootstrap, Github, APlayer<br>
                 For <span class="badge bg-danger">AMLL</span> and <span class="badge bg-success">AMLL TTML
@@ -454,10 +457,12 @@
                                     </div>
                                     <div class="row"></div>
                                     <div class="row">
-                                        <div class="col-10 d-grid" id="m-links">
+                                        <!--网易云跳转-->
+                                        <div class="col-6 d-grid" id="m-links">
                                             <div class="spinner-border text-success"></div>
                                         </div>
-                                        <div class="col"></div>
+                                        <!--Github跳转-->
+                                        <div class="col-6 d-grid" id="m-2gh"></div>
                                         <div class="col"></div>
                                     </div>
                                 </div>

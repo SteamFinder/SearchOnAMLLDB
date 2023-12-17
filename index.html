@@ -282,12 +282,15 @@
 
         function fetchDetails(ttml_id) {
             var music_id = ttml_id;
+            var music_src;
             const details_title = document.getElementById('m-title');
             const details_body = document.getElementById('m-body');
             const details_footer = document.getElementById('m-footer');
             const details_pic = document.getElementById('m-pic');
             const details_singer = document.getElementById('m-singer');
             const details_name = document.getElementById('m-name');
+            const details_audio = document.getElementById('m-audio');
+            const details_links = document.getElementById('m-links');
             fetch('https://autumnfish.cn/song/detail?ids=' + music_id)
                 .then(response => response.json())
                 .then(data => {
@@ -303,7 +306,16 @@
             // details_title.innerHTML = music_id;
             // details_body.innerHTML = music_id;
             // details_footer.innerHTML = music_id;
-
+            fetch('https://autumnfish.cn/song/url/v1?id='+ music_id + '&level=standard')
+            .then(response => response.json())
+            .then(data => {
+                // data 是包含文件和子文件夹信息的数组
+                // 遍历数组并获取每个对象的 name 字段
+                    console.log('Fetch audio from ncm successfully');
+                    music_src = data.data[0].url;
+                    details_audio.innerHTML = '<audio src=\'' + music_src + '\' controls />';
+                    details_links.innerHTML = '<button type=\"button\" class=\"btn btn-outline-success btn-block\" onclick=\"window.location.href=\'https://music.163.com/#/song?id='+ music_id +'\'\">网易云歌曲页面</button>';
+            });
         }
     </script>
 </head>
@@ -383,7 +395,7 @@
         </div>
         <!-- 模态框 -->
         <div class="modal fade" id="details">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <!-- 模态框头部 -->
                     <div class="modal-header">
@@ -398,9 +410,20 @@
                                 <div class="col-3" id="m-pic">
                                 </div>
                                 <div class="col">
-                                    <div class="row" id="m-name">孤勇者</div>
-                                    <div class="row" id="m-singer">陈奕迅</div>
+                                    <div class="row" id="m-name" style="font-weight: bold;">歌曲名称</div>
+                                    <div class="row" id="m-singer">歌手</div>
+                                    <div class="row"><hr></div>
+                                    <div class="row">
+                                        <div class="col-6" id="m-audio">歌曲播放控件</div>
+                                        <div class="col"></div>
+                                        <div class="col"></div>
+                                    </div>
                                     <div class="row"></div>
+                                    <div class="row">
+                                        <div class="col-6 d-grid" id="m-links">网易云页面跳转</div>
+                                        <div class="col"></div>
+                                        <div class="col"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

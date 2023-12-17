@@ -7,6 +7,8 @@
     <script src="https://cdn.staticfile.org/popper.js/2.9.3/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.min.js"></script>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.0/dist/APlayer.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.0/dist/APlayer.min.js"></script>
     <link rel="icon"
         href="https://github.com/Steve-xmh/applemusic-like-lyrics/raw/main/packages/bncm/src/assets/amll-icon.svg"
         type="image/png">
@@ -306,16 +308,25 @@
             // details_title.innerHTML = music_id;
             // details_body.innerHTML = music_id;
             // details_footer.innerHTML = music_id;
-            fetch('https://autumnfish.cn/song/url/v1?id='+ music_id + '&level=standard')
-            .then(response => response.json())
-            .then(data => {
-                // data 是包含文件和子文件夹信息的数组
-                // 遍历数组并获取每个对象的 name 字段
+            fetch('https://autumnfish.cn/song/url/v1?id=' + music_id + '&level=standard')
+                .then(response => response.json())
+                .then(data => {
+                    // data 是包含文件和子文件夹信息的数组
+                    // 遍历数组并获取每个对象的 name 字段
                     console.log('Fetch audio from ncm successfully');
                     music_src = data.data[0].url;
-                    details_audio.innerHTML = '<audio src=\'' + music_src + '\' controls />';
-                    details_links.innerHTML = '<button type=\"button\" class=\"btn btn-outline-success btn-block\" onclick=\"window.location.href=\'https://music.163.com/#/song?id='+ music_id +'\'\">网易云歌曲页面</button>';
-            });
+                    //details_audio.innerHTML = '<audio src=\'' + music_src + '\' controls />'; APlayer代替
+                    details_links.innerHTML = '<button type=\"button\" class=\"btn btn-outline-success btn-block\" onclick=\"window.location.href=\'https://music.163.com/#/song?id=' + music_id + '\'\">网易云歌曲页面</button>';
+                    const ap = new APlayer({
+                        container: document.getElementById('aplayer'),
+                        audio: [{
+                            name: current_name,
+                            artist: current_singer,
+                            url: music_src,
+                            cover: current_pic
+                        }]
+                    });
+                });
         }
     </script>
 </head>
@@ -331,7 +342,8 @@
                 </div>
                 <!-- <img src="https://github.com/Steve-xmh/amll-ttml-tool/blob/main/public/logo.svg" width="100vh"/> -->
                 <h2 style="text-align: center;">Search On AMLL歌词数据库</h2>
-                <h4 style="text-align: center;">专为<a href="https://github.com/Steve-xmh/amll-ttml-db" target="_blank">AMLL TTML DB</a>设计</h4>
+                <h4 style="text-align: center;">专为<a href="https://github.com/Steve-xmh/amll-ttml-db"
+                        target="_blank">AMLL TTML DB</a>设计</h4>
             </div>
             <div class="col"></div>
         </div>
@@ -390,8 +402,9 @@
         <div class="row">
             <hr>
             <small>Powered by Bootstrap, <br>
-                published on Github, <br> 
-                for <span class="badge bg-danger">AMLL</span> and <span class="badge bg-success">AMLL TTML Tool</span></small>
+                published on Github, <br>
+                for <span class="badge bg-danger">AMLL</span> and <span class="badge bg-success">AMLL TTML
+                    Tool</span></small>
         </div>
         <!-- 模态框 -->
         <div class="modal fade" id="details">
@@ -412,15 +425,27 @@
                                 <div class="col">
                                     <div class="row" id="m-name" style="font-weight: bold;">歌曲名称</div>
                                     <div class="row" id="m-singer">歌手</div>
-                                    <div class="row"><hr></div>
                                     <div class="row">
-                                        <div class="col-6" id="m-audio">歌曲播放控件</div>
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        <!-- <div id="aplayer"></div>暂时禁用原生audio -->
+                                        <div class="col-6" id="m-audio"></div>
+                                        <div class="col"></div>
+                                        <div class="col"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <div id="aplayer"></div>
+                                        </div>
                                         <div class="col"></div>
                                         <div class="col"></div>
                                     </div>
                                     <div class="row"></div>
                                     <div class="row">
-                                        <div class="col-6 d-grid" id="m-links">网易云页面跳转</div>
+                                        <div class="col-10 d-grid" id="m-links">
+                                            <div class="spinner-border text-success"></div>
+                                        </div>
                                         <div class="col"></div>
                                         <div class="col"></div>
                                     </div>

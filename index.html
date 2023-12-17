@@ -319,6 +319,8 @@
                     // 遍历数组并获取每个对象的 name 字段
                     console.log('[fetchDetails]成功 获取音频数据');
                     music_src = data.data[0].url;
+                    var updatedUrl = music_src.replace(/^http:/, "https:");
+                    console.log('[fetchDetails]成功 升级音频地址为https');
                     //details_audio.innerHTML = '<audio src=\'' + music_src + '\' controls />'; APlayer代替
                     details_links.innerHTML = '<button type=\"button\" class=\"btn btn-outline-success btn-block\" onclick=\"window.location.href=\'https://music.163.com/#/song?id=' + music_id + '\'\">网易云歌曲页面</button>';
                     const ap = new APlayer({
@@ -326,7 +328,7 @@
                         audio: [{
                             name: current_name,
                             artist: current_singer,
-                            url: music_src,
+                            url: updatedUrl,
                             cover: current_pic
                         }]
                     });

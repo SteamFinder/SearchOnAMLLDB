@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search On AMLL歌词数据库</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <link rel="icon"
+        href="https://github.com/Steve-xmh/applemusic-like-lyrics/raw/main/packages/bncm/src/assets/amll-icon.svg"
+        type="image/png">
+    <script>
+        //预获取AMLL歌词数据库信息
+        //http://music.163.com/api/song/detail/?id=1296345669&ids=[1296345669]
+        console.log('initiate vars');
+        //
+        var amll_data = [];
+        var ncm_data_name = [];
+        //
+        console.log('fetch from github');
+        //
+        fetch('https://api.github.com/repos/Steve-xmh/amll-ttml-db/contents/lyrics')
+            .then(response => response.json())
+            .then(data => {
+                // data 是包含文件和子文件夹信息的数组
+                // 遍历数组并获取每个对象的 name 字段
+                data.forEach(file => {
+                    console.log('Fetch amll lyrics db successfully');
+                    const ttml_id = file.name.replace(/\.ttml$/, '');
+                    amll_data.push(ttml_id);
+                });
+                console.log(amll_data);
+            });
+        //
+        console.log('push amll_data successfully');
+        //
+        function fetchNcmData() {
+            //
+            console.log('write ttml_id data to html');
+            //
+            //取歌曲名
+            //向网页写数据
+            // 获取表格的 HTML 元素
+            const table = document.getElementById('amll_data_list');
+            const tbody = table.querySelector('tbody');
+            // 清空内容
+            console.log('clean tbody data');
+            tbody.innerHTML = '';
+            console.log('clean ncm_data_name');
+            ncm_data_name = [];
+            // 使用 for 循环遍历数组
+            for (let i = 0; i < amll_data.length; i++) {
+                // 创建表格行元素
+                const row = document.createElement('tr');
+                // 创建表格单元格元素
+                const no = document.createElement('td');
+                const id = document.createElement('td');
+                const sname = document.createElement('td');
+                const cbutton = document.createElement('td');
+                // 设置单元格的文本内容
+                no.textContent = i + 1;
+                id.textContent = amll_data[i];
+                // sname.textContent = 'loading';
+                sname.innerHTML = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
+                sname.setAttribute('ncmname', i);
+                cbutton.innerHTML = "<button type=\"button\" class=\"btn btn-outline-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#details\" onclick=\"fetchDetails(" + amll_data[i] + ")\">详情</button>";
+                cbutton.setAttribute('ncmid', amll_data[i])
+                // 将单元格添加到行中
+                row.appendChild(no);
+                row.appendChild(id);
+                row.appendChild(sname);
+                row.appendChild(cbutton);
+                // 将行添加到表格的 tbody 中
+                tbody.appendChild(row);
+            }
+            //
+            console.log('write ncm_name data to html');
+            //
+            for (let i = 0; i < amll_data.length; i++) {
+                // console.log(amll_data[i] + 'https://autumnfish.cn/song/detail?ids=' + amll_data[i]);
+                //1296345669 1901371647 https://autumnfish.cn/song/detail?ids=1901371647
+                fetch('https://autumnfish.cn/song/detail?ids=' + amll_data[i])
+                    .then(response => response.json())
+                    .then(data => {
+                        // 输出name字段
+                        var name = data.songs[0].name;
+                        // console.log('fetch:' + amll_data[i] + ' ' + name);
+                        ncm_data_name.push(name);
+                        console.log('Fetch ncm info db successfully');
+                        var tdElement = document.querySelector('td[ncmname=\'' + i + '\']');
+                        // 检查是否找到了元素
+                        if (tdElement) {
+                            // 写入数据
+                            tdElement.innerText = name;
+                        } else {
+                            console.log('Cannot get attribute <td> with ncmname');
+                        }
+                    });
+            }
+            //ncm_data_name
+            console.log(ncm_data_name);
+            console.log('push ncm_data_name successfully');
+            console.log('func ncmdata for successfully');
+        }
+
+        function fetchNcmDataByID() {
+            const ncmIdValue = document.getElementById('ncm_id').value; //取值
+            for (let i = 0; i < amll_data.length; i++) {
+                if (ncmIdValue == amll_data[i]) {
+                    console.log('write ttml_id data to html');
+                    //取歌曲名
+                    //向网页写数据
+                    // 获取表格的 HTML 元素
+                    const table = document.getElementById('amll_data_list');
+                    const tbody = table.querySelector('tbody');
+                    // 清空内容
+                    console.log('clean tbody data');
+                    tbody.innerHTML = '';
+                    console.log('clean ncm_data_name');
+                    ncm_data_name = [];
+                    // 创建表格行元素
+                    const row = document.createElement('tr');
+                    // 创建表格单元格元素
+                    const no = document.createElement('td');
+                    const id = document.createElement('td');
+                    const sname = document.createElement('td');
+                    // 设置单元格的文本内容
+                    no.textContent = i + 1;
+                    id.textContent = amll_data[i];
+                    // sname.textContent = 'loading';
+                    sname.innerHTML = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
+                    sname.setAttribute('ncmname', i);
+                    // 将单元格添加到行中
+                    row.appendChild(no);
+                    row.appendChild(id);
+                    row.appendChild(sname);
+                    // 将行添加到表格的 tbody 中
+                    tbody.appendChild(row);
+                    fetch('https://autumnfish.cn/song/detail?ids=' + amll_data[i])
+                        .then(response => response.json())
+                        .then(data => {
+                            // 输出name字段
+                            var name = data.songs[0].name;
+                            // console.log('fetch:' + amll_data[i] + ' ' + name);
+                            ncm_data_name.push(name);
+                            console.log('Fetch ncm info db successfully');
+                            var tdElement = document.querySelector('td[ncmname=\'' + i + '\']');
+                            // 检查是否找到了元素
+                            if (tdElement) {
+                                // 写入数据
+                                tdElement.innerText = name;
+                            } else {
+                                console.log('Cannot get attribute <td> with ncmname');
+                            }
+                        });
+                    //
+                    console.log('write ncm_name data to html');
+                    break;
+                }
+            }
+        }
+
+        function fetchDetails(ttml_id){
+            var music_id = ttml_id;
+            const details_title = document.getElementById('modal-title');
+            const details_body = document.getElementById('modal-body');
+            const details_footer = document.getElementById('modal-footer');
+            details_title.innerHTML = music_id;
+            details_body.innerHTML = music_id;
+            details_footer.innerHTML = music_id;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container p-5 my-5 border">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <form>
+                    <div class="mb-3 mt-3">
+                        <label for="ncm_id" class="form-label">歌曲ID</label>
+                        <input type="ncm_id" class="form-control" id="ncm_id" placeholder="网易云音乐歌曲ID" name="ncm_id">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ncm_name" class="form-label">歌曲名称</label>
+                        <input type="ncm_name" class="form-control" id="ncm_name" placeholder="歌名" name="ncm_name">
+                    </div>
+                    <!-- <button type="submit" class="btn btn-primary" onclick="fetchNcmData()">Submit</button> -->
+                </form>
+                <div class="row">
+                    <div class="col-4 d-grid"><button class="btn btn-primary btn-block"
+                            onclick="fetchNcmData()">查询所有歌词</button></div>
+                    <div class="col-4 d-grid"><button class="btn btn-outline-primary btn-block"
+                            onclick="fetchNcmDataByID()">按音乐ID查询</button></div>
+                    <div class="col-4 d-grid"><button class="btn btn-outline-success btn-block"
+                            onclick="fetchNcmDataByName()">按歌名查询</button></div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <!---->
+        <div class="row"></div>
+        <hr>
+        <div class="row"></div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
+                <table class="table table-hover" id="amll_data_list">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>id</th>
+                            <th>歌名</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <!--写查询数据 Begin-->
+                    <tbody>
+                    </tbody>
+                    <!--写查询数据 End-->
+                </table>
+            </div>
+            <div class="col"></div>
+        </div>
+        <!-- 模态框 -->
+        <div class="modal fade" id="details">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="m-title">模态框标题</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <!-- 模态框内容 -->
+                    <div class="modal-body" id="m-body">
+                        模态框内容..
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <div id="m-foorer"></div>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

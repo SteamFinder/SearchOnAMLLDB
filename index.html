@@ -281,7 +281,7 @@
                 });
         }
 
-
+        let ap;//父级作用域
         function fetchDetails(ttml_id) {
             var music_id = ttml_id;
             var music_src;
@@ -330,7 +330,10 @@
         }
 
         function shutAplayer() {
+            // ap.pause(); aplayer提供的pause无效
+            // ap.destroy(); aplayer提供的destroy无效
             ap = null;
+            console.log("destroy aplayer");
             //关闭模态框后销毁aplayer 将变量重新赋值为null，以便释放引用
         }
     </script>

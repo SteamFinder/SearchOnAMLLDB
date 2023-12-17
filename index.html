@@ -25,7 +25,7 @@
 
         /*设置字体*/
         body {
-            font-family: MiSans, Source Han Sans, "微软雅黑", sans-serif !important; 
+            font-family: MiSans, Source Han Sans, "微软雅黑", sans-serif !important;
         }
     </style>
     <link rel="icon"
@@ -342,7 +342,7 @@
                     console.log('[fetchDetails]成功 升级音频地址为https');
                     //details_audio.innerHTML = '<audio src=\'' + music_src + '\' controls />'; APlayer代替
                     details_links.innerHTML = '<button type=\"button\" class=\"btn btn-outline-success btn-block\" onclick=\"window.location.href=\'https://music.163.com/#/song?id=' + music_id + '\'\">网易云歌曲页面</button>';
-                    const ap = new APlayer({
+                    ap = new APlayer({
                         container: document.getElementById('aplayer'),
                         audio: [{
                             name: current_name,
@@ -355,8 +355,8 @@
         }
 
         function shutAplayer() {
-            // ap.pause();
-            // ap.destroy();
+            ap.pause();
+            //ap.destroy();
             ap = null;
             var delAP = document.getElementById('aplayer');
             delAP.innerHTML = '';

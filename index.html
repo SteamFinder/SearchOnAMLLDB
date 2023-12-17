@@ -15,7 +15,8 @@
     <script>
         //预获取AMLL歌词数据库信息
         //http://music.163.com/api/song/detail/?id=1296345669&ids=[1296345669]
-        console.log('initiate vars');
+        console.log('[main]初始化');
+        console.log('\n' + ' %c Search On AMLL DB' + ' %c https://steamfinder.github.io/SearchOnAMLLDB ' + '\n', 'color: #fff; background: #030307; padding:5px 0;', 'background: #2fd160; padding:5px 0;');
         //
         var amll_data = [];
         var ncm_data_name = [];
@@ -23,7 +24,7 @@
         var current_singer;
         var current_pic;
         //
-        console.log('fetch from github');
+        console.log('[main]从Github获取AMLL TTML DB数据库数据');
         //
         fetch('https://api.github.com/repos/Steve-xmh/amll-ttml-db/contents/lyrics')
             .then(response => response.json())
@@ -31,18 +32,18 @@
                 // data 是包含文件和子文件夹信息的数组
                 // 遍历数组并获取每个对象的 name 字段
                 data.forEach(file => {
-                    console.log('Fetch amll lyrics db successfully');
+                    console.log('[main]成功 从Github获取AMLL TTML DB数据库数据');
                     const ttml_id = file.name.replace(/\.ttml$/, '');
                     amll_data.push(ttml_id);
                 });
-                console.log(amll_data);
+                console.log('[main]获取到Github数据库数据, 分离.ttml后缀' + amll_data);
             });
         //
-        console.log('push amll_data successfully');
+        console.log('[main]成功 存储Github数据库列表数据');
         //
         function fetchNcmData() {
             //
-            console.log('write ttml_id data to html');
+            console.log('[main]向页面写入TTML数据');
             //
             //取歌曲名
             //向网页写数据
@@ -50,9 +51,9 @@
             const table = document.getElementById('amll_data_list');
             const tbody = table.querySelector('tbody');
             // 清空内容
-            console.log('clean tbody data');
+            console.log('[main]清除表格数据');
             tbody.innerHTML = '';
-            console.log('clean ncm_data_name');
+            console.log('[main]清除网易云查询数据');
             ncm_data_name = [];
             // 使用 for 循环遍历数组
             for (let i = 0; i < amll_data.length; i++) {
@@ -84,7 +85,7 @@
                 tbody.appendChild(row);
             }
             //
-            console.log('write ncm_name data to html');
+            console.log('[main]向页面写入网易云查询数据');
             //
             for (let i = 0; i < amll_data.length; i++) {
                 // console.log(amll_data[i] + 'https://autumnfish.cn/song/detail?ids=' + amll_data[i]);
@@ -97,14 +98,14 @@
                         var singername = data.songs[0].ar[0].name;
                         // console.log('fetch:' + amll_data[i] + ' ' + name);
                         ncm_data_name.push(name);
-                        console.log('Fetch ncm info db successfully');
+                        console.log('[main]成功 存储网易云数据库列表数据');
                         var tdElement = document.querySelector('td[ncmname=\'' + i + '\']');
                         // 检查是否找到了元素
                         if (tdElement) {
                             // 写入数据
                             tdElement.innerText = name;
                         } else {
-                            console.log('Cannot get attribute <td> with ncmname');
+                            console.log('[main]Cannot get attribute <td> with ncmname');
                         }
                         var tdElement = document.querySelector('td[ncmsname=\'' + i + '\']');
                         // 检查是否找到了元素
@@ -112,30 +113,30 @@
                             // 写入数据
                             tdElement.innerText = singername;
                         } else {
-                            console.log('Cannot get attribute <td> with ncmsname');
+                            console.log('[main]Cannot get attribute <td> with ncmsname');
                         }
                     });
             }
             //ncm_data_name
-            console.log(ncm_data_name);
-            console.log('push ncm_data_name successfully');
-            console.log('func ncmdata for successfully');
+            console.log('[main]' + ncm_data_name);
+            console.log('[main]成功 存储ncm_data_name');
+            console.log('[main]成功 执行函数');
         }
 
         function fetchNcmDataByID() {
             const ncmIdValue = document.getElementById('ncm_id').value; //取值
             for (let i = 0; i < amll_data.length; i++) {
                 if (ncmIdValue == amll_data[i]) {
-                    console.log('write ttml_id data to html');
+                    console.log('[fetchNcmDataByID]向页面写入网易云查询数据');
                     //取歌曲名
                     //向网页写数据
                     // 获取表格的 HTML 元素
                     const table = document.getElementById('amll_data_list');
                     const tbody = table.querySelector('tbody');
                     // 清空内容
-                    console.log('clean tbody data');
+                    console.log('[fetchNcmDataByID]清除表格数据');
                     tbody.innerHTML = '';
-                    console.log('clean ncm_data_name');
+                    console.log('[fetchNcmDataByID]清除网易云查询数据');
                     ncm_data_name = [];
                     // 创建表格行元素
                     const row = document.createElement('tr');
@@ -174,14 +175,14 @@
                             // current_pic = data.songs[0].al.picUrl;
                             // console.log('fetch:' + amll_data[i] + ' ' + name);
                             ncm_data_name.push(name);
-                            console.log('Fetch ncm info db successfully');
+                            console.log('[fetchNcmDataByID]成功 从网易云数据库查询数据');
                             var tdElement = document.querySelector('td[ncmname=\'' + i + '\']');
                             // 检查是否找到了元素
                             if (tdElement) {
                                 // 写入数据
                                 tdElement.innerText = name;
                             } else {
-                                console.log('Cannot get attribute <td> with ncmname');
+                                console.log('[fetchNcmDataByID]Cannot get attribute <td> with ncmname');
                             }
                             var tdElement = document.querySelector('td[ncmsname=\'' + i + '\']');
                             // 检查是否找到了元素
@@ -189,11 +190,11 @@
                                 // 写入数据
                                 tdElement.innerText = singername;
                             } else {
-                                console.log('Cannot get attribute <td> with ncmsname');
+                                console.log('[fetchNcmDataByID]Cannot get attribute <td> with ncmsname');
                             }
                         });
                     //
-                    console.log('write ncm_name data to html');
+                    console.log('[fetchNcmDataByID]向页面写入ncm_name数据');
                     break;
                 }
             }
@@ -203,9 +204,9 @@
             // 清空内容
             const table = document.getElementById('amll_data_list');
             const tbody = table.querySelector('tbody');
-            console.log('clean tbody data');
+            console.log('[fetchNcmDataByName]清除表格数据');
             tbody.innerHTML = '';
-            console.log('clean ncm_data_name');
+            console.log('[fetchNcmDataByName]清除网易云查询数据');
             ncm_data_name = [];
             var amll_id;
             var ncm_names = [];
@@ -219,7 +220,7 @@
                     // 遍历数组并获取每个对象的 name 字段
                     let ii = 0;
                     data.forEach(file => {
-                        console.log('Fetch amll lyrics db successfully');
+                        console.log('[fetchNcmDataByName]成功 存储Github数据库列表数据');
                         const ttml_id = file.name.replace(/\.ttml$/, '');
                         // amll_data.push(ttml_id);
                         // amll_data.push(ttml_id);
@@ -234,10 +235,10 @@
                                 // current_pic = data.songs[0].al.picUrl;
                                 // console.log('fetch:' + amll_data[i] + ' ' + name);
                                 // ncm_names.push(name);
-                                console.log('Fetch ncm info db successfully');
+                                console.log('[fetchNcmDataByName]成功 存储网易云查询数据');
                                 if (ncmNameValue == ssname) {
                                     ncm_ids = ttml_id;
-                                    console.log('write ttml_id data to html');
+                                    console.log('[fetchNcmDataByName]向页面写入ttml_id数据');
                                     //取歌曲名
                                     //向网页写数据
                                     // 获取表格的 HTML 元素
@@ -271,7 +272,7 @@
                                     // 将行添加到表格的 tbody 中
                                     tbody.appendChild(row);
                                     //
-                                    console.log('write ncm_name data to html');
+                                    console.log('[fetchNcmDataByName]向页面写入ncm_name数据');
                                     // ii++;
                                 }
                                 ii++;
@@ -303,8 +304,8 @@
                     current_pic = data.songs[0].al.picUrl;
                     // console.log('fetch:' + amll_data[i] + ' ' + name);
                     details_pic.innerHTML = "<img src=\" " + current_pic + "\" width=\"100vh\" />";
-                    details_singer.innerHTML = current_singer + '<br>' + music_id;
-                    details_name.innerHTML = current_name;
+                    details_singer.innerHTML = '歌手: ' + current_singer + '<br>歌曲ID: ' + music_id;
+                    details_name.innerHTML = '歌曲名: ' + current_name;
                     details_2gh.innerHTML = '<button type=\"button\" class=\"btn btn-outline-primary btn-block\" onclick=\"window.location.href=\'https://github.com/Steve-xmh/amll-ttml-db/blob/main/lyrics/' + music_id + '.ttml\'\">Github歌词</button>';
                     details_title.innerHTML = '歌曲详情 ' + current_name + ' ' + music_id;
                 });
@@ -316,7 +317,7 @@
                 .then(data => {
                     // data 是包含文件和子文件夹信息的数组
                     // 遍历数组并获取每个对象的 name 字段
-                    console.log('Fetch audio from ncm successfully');
+                    console.log('[fetchDetails]成功 获取音频数据');
                     music_src = data.data[0].url;
                     //details_audio.innerHTML = '<audio src=\'' + music_src + '\' controls />'; APlayer代替
                     details_links.innerHTML = '<button type=\"button\" class=\"btn btn-outline-success btn-block\" onclick=\"window.location.href=\'https://music.163.com/#/song?id=' + music_id + '\'\">网易云歌曲页面</button>';
@@ -336,7 +337,7 @@
             // ap.pause(); aplayer提供的pause无效
             // ap.destroy(); aplayer提供的destroy无效
             ap = null;
-            console.log("destroy aplayer");
+            console.log("[shutAplayer]Destroy aplayer");
             //关闭模态框后销毁aplayer 将变量重新赋值为null，以便释放引用
         }
     </script>
@@ -449,13 +450,16 @@
                                         <div class="col"></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-10">
-                                            <div id="aplayer"></div>
+                                        <div class="col">
+                                            <div id="aplayer">组件加载中</div>
                                         </div>
-                                        <div class="col"></div>
-                                        <div class="col"></div>
+                                        <!-- <div class="col"></div>
+                                        <div class="col"></div> -->
                                     </div>
                                     <div class="row"></div>
+                                    <div class="row">
+                                        <hr>
+                                    </div>
                                     <div class="row">
                                         <!--网易云跳转-->
                                         <div class="col-6 d-grid" id="m-links">

@@ -17,6 +17,9 @@
         //
         var amll_data = [];
         var ncm_data_name = [];
+        var current_name;
+        var current_singer;
+        var current_pic;
         //
         console.log('fetch from github');
         //
@@ -58,6 +61,7 @@
                 const id = document.createElement('td');
                 const sname = document.createElement('td');
                 const cbutton = document.createElement('td');
+                const csinger = document.createElement('td');
                 // 设置单元格的文本内容
                 no.textContent = i + 1;
                 id.textContent = amll_data[i];
@@ -66,10 +70,13 @@
                 sname.setAttribute('ncmname', i);
                 cbutton.innerHTML = "<button type=\"button\" class=\"btn btn-outline-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#details\" onclick=\"fetchDetails(" + amll_data[i] + ")\">详情</button>";
                 cbutton.setAttribute('ncmid', amll_data[i])
+                csinger.innerHTML = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
+                csinger.setAttribute('ncmsname', i)
                 // 将单元格添加到行中
                 row.appendChild(no);
                 row.appendChild(id);
                 row.appendChild(sname);
+                row.appendChild(csinger);
                 row.appendChild(cbutton);
                 // 将行添加到表格的 tbody 中
                 tbody.appendChild(row);
@@ -85,6 +92,7 @@
                     .then(data => {
                         // 输出name字段
                         var name = data.songs[0].name;
+                        var singername = data.songs[0].ar[0].name;
                         // console.log('fetch:' + amll_data[i] + ' ' + name);
                         ncm_data_name.push(name);
                         console.log('Fetch ncm info db successfully');
@@ -95,6 +103,14 @@
                             tdElement.innerText = name;
                         } else {
                             console.log('Cannot get attribute <td> with ncmname');
+                        }
+                        var tdElement = document.querySelector('td[ncmsname=\'' + i + '\']');
+                        // 检查是否找到了元素
+                        if (tdElement) {
+                            // 写入数据
+                            tdElement.innerText = singername;
+                        } else {
+                            console.log('Cannot get attribute <td> with ncmsname');
                         }
                     });
             }
@@ -126,6 +142,7 @@
                     const id = document.createElement('td');
                     const sname = document.createElement('td');
                     const cbutton = document.createElement('td');
+                    const csinger = document.createElement('td');
                     // 设置单元格的文本内容
                     no.textContent = i + 1;
                     id.textContent = amll_data[i];
@@ -134,10 +151,13 @@
                     // sname.textContent = 'loading';
                     sname.innerHTML = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
                     sname.setAttribute('ncmname', i);
+                    csinger.innerHTML = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
+                    csinger.setAttribute('ncmsname', i)
                     // 将单元格添加到行中
                     row.appendChild(no);
                     row.appendChild(id);
                     row.appendChild(sname);
+                    row.appendChild(csinger);
                     row.appendChild(cbutton);
                     // 将行添加到表格的 tbody 中
                     tbody.appendChild(row);
@@ -146,6 +166,10 @@
                         .then(data => {
                             // 输出name字段
                             var name = data.songs[0].name;
+                            var singername = data.songs[0].ar[0].name;
+                            // current_name = data.songs[0].name;
+                            // current_singer = data.songs[0].ar.name;
+                            // current_pic = data.songs[0].al.picUrl;
                             // console.log('fetch:' + amll_data[i] + ' ' + name);
                             ncm_data_name.push(name);
                             console.log('Fetch ncm info db successfully');
@@ -157,6 +181,14 @@
                             } else {
                                 console.log('Cannot get attribute <td> with ncmname');
                             }
+                            var tdElement = document.querySelector('td[ncmsname=\'' + i + '\']');
+                            // 检查是否找到了元素
+                            if (tdElement) {
+                                // 写入数据
+                                tdElement.innerText = singername;
+                            } else {
+                                console.log('Cannot get attribute <td> with ncmsname');
+                            }
                         });
                     //
                     console.log('write ncm_name data to html');
@@ -165,14 +197,113 @@
             }
         }
 
-        function fetchDetails(ttml_id){
+        function fetchNcmDataByName() {
+            // 清空内容
+            const table = document.getElementById('amll_data_list');
+            const tbody = table.querySelector('tbody');
+            console.log('clean tbody data');
+            tbody.innerHTML = '';
+            console.log('clean ncm_data_name');
+            ncm_data_name = [];
+            var amll_id;
+            var ncm_names = [];
+            var ncm_ids;
+            var ncm_ii;
+            const ncmNameValue = document.getElementById('ncm_name').value; //取值
+            fetch('https://api.github.com/repos/Steve-xmh/amll-ttml-db/contents/lyrics')
+                .then(response => response.json())
+                .then(data => {
+                    // data 是包含文件和子文件夹信息的数组
+                    // 遍历数组并获取每个对象的 name 字段
+                    let ii = 0;
+                    data.forEach(file => {
+                        console.log('Fetch amll lyrics db successfully');
+                        const ttml_id = file.name.replace(/\.ttml$/, '');
+                        // amll_data.push(ttml_id);
+                        // amll_data.push(ttml_id);
+                        fetch('https://autumnfish.cn/song/detail?ids=' + ttml_id)
+                            .then(response => response.json())
+                            .then(data => {
+                                // 输出name字段
+                                var ssname = data.songs[0].name;
+                                var singername = data.songs[0].ar[0].name;
+                                // current_name = data.songs[0].name;
+                                // current_singer = data.songs[0].ar.name;
+                                // current_pic = data.songs[0].al.picUrl;
+                                // console.log('fetch:' + amll_data[i] + ' ' + name);
+                                // ncm_names.push(name);
+                                console.log('Fetch ncm info db successfully');
+                                if (ncmNameValue == ssname) {
+                                    ncm_ids = ttml_id;
+                                    console.log('write ttml_id data to html');
+                                    //取歌曲名
+                                    //向网页写数据
+                                    // 获取表格的 HTML 元素
+                                    const table = document.getElementById('amll_data_list');
+                                    const tbody = table.querySelector('tbody');
+                                    // 清空内容
+                                    // 创建表格行元素
+                                    const row = document.createElement('tr');
+                                    // 创建表格单元格元素
+                                    const no = document.createElement('td');
+                                    const id = document.createElement('td');
+                                    const sname = document.createElement('td');
+                                    const cbutton = document.createElement('td');
+                                    const csinger = document.createElement('td');
+                                    // 设置单元格的文本内容
+                                    no.textContent = ii + 1;
+                                    id.textContent = ncm_ids;
+                                    cbutton.innerHTML = "<button type=\"button\" class=\"btn btn-outline-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#details\" onclick=\"fetchDetails(" + ncm_ids + ")\">详情</button>";
+                                    cbutton.setAttribute('ncmid', ncm_ids)
+                                    // sname.textContent = 'loading';
+                                    sname.innerHTML = ssname;
+                                    // sname.setAttribute('ncmname', ncm_ii);
+                                    csinger.innerHTML = singername;
+                                    // csinger.setAttribute('ncmsname', ncm_ii)
+                                    // 将单元格添加到行中
+                                    row.appendChild(no);
+                                    row.appendChild(id);
+                                    row.appendChild(sname);
+                                    row.appendChild(csinger);
+                                    row.appendChild(cbutton);
+                                    // 将行添加到表格的 tbody 中
+                                    tbody.appendChild(row);
+                                    //
+                                    console.log('write ncm_name data to html');
+                                    // ii++;
+                                }
+                                ii++;
+                            });
+                            // ii++;
+                    });
+                });
+        }
+
+
+        function fetchDetails(ttml_id) {
             var music_id = ttml_id;
             const details_title = document.getElementById('m-title');
             const details_body = document.getElementById('m-body');
             const details_footer = document.getElementById('m-footer');
-            details_title.innerHTML = music_id;
-            details_body.innerHTML = music_id;
-            details_footer.innerHTML = music_id;
+            const details_pic = document.getElementById('m-pic');
+            const details_singer = document.getElementById('m-singer');
+            const details_name = document.getElementById('m-name');
+            fetch('https://autumnfish.cn/song/detail?ids=' + music_id)
+                .then(response => response.json())
+                .then(data => {
+                    // 输出name字段
+                    current_name = data.songs[0].name;
+                    current_singer = data.songs[0].ar[0].name;
+                    current_pic = data.songs[0].al.picUrl;
+                    // console.log('fetch:' + amll_data[i] + ' ' + name);
+                    details_pic.innerHTML = "<img src=\" " + current_pic + "\" width=\"100vh\" />";
+                    details_singer.innerHTML = current_singer;
+                    details_name.innerHTML = current_name;
+                });
+            // details_title.innerHTML = music_id;
+            // details_body.innerHTML = music_id;
+            // details_footer.innerHTML = music_id;
+
         }
     </script>
 </head>
@@ -210,13 +341,14 @@
         <div class="row"></div>
         <div class="row">
             <div class="col"></div>
-            <div class="col-8">
+            <div class="col-10">
                 <table class="table table-hover" id="amll_data_list">
                     <thead>
                         <tr>
                             <th>序号</th>
                             <th>id</th>
                             <th>歌名</th>
+                            <th>歌手</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -240,11 +372,21 @@
                     <!-- 模态框内容 -->
                     <div class="modal-body">
                         <div id="m-body"></div>
-                        模态框内容..
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-3" id="m-pic">
+                                </div>
+                                <div class="col">
+                                    <div class="row" id="m-name">孤勇者</div>
+                                    <div class="row" id="m-singer">陈奕迅</div>
+                                    <div class="row"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- 模态框底部 -->
                     <div class="modal-footer">
-                        <div id="m-footer"></div>
+                        <div id="m-footer" style="text-align: left;"></div>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
                     </div>
                 </div>

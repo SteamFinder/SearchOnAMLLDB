@@ -355,9 +355,12 @@
         }
 
         function shutAplayer() {
-            // ap.pause(); aplayer提供的pause无效
-            // ap.destroy(); aplayer提供的destroy无效
+            // ap.pause();
+            // ap.destroy();
             ap = null;
+            var delAP = document.getElementById('aplayer');
+            delAP.innerHTML = '';
+            //清理元素
             console.log("[shutAplayer]Destroy aplayer");
             //关闭模态框后销毁aplayer 将变量重新赋值为null，以便释放引用
         }

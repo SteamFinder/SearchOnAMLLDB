@@ -125,9 +125,12 @@
                     const no = document.createElement('td');
                     const id = document.createElement('td');
                     const sname = document.createElement('td');
+                    const cbutton = document.createElement('td');
                     // 设置单元格的文本内容
                     no.textContent = i + 1;
                     id.textContent = amll_data[i];
+                    cbutton.innerHTML = "<button type=\"button\" class=\"btn btn-outline-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#details\" onclick=\"fetchDetails(" + amll_data[i] + ")\">详情</button>";
+                    cbutton.setAttribute('ncmid', amll_data[i])
                     // sname.textContent = 'loading';
                     sname.innerHTML = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
                     sname.setAttribute('ncmname', i);
@@ -135,6 +138,7 @@
                     row.appendChild(no);
                     row.appendChild(id);
                     row.appendChild(sname);
+                    row.appendChild(cbutton);
                     // 将行添加到表格的 tbody 中
                     tbody.appendChild(row);
                     fetch('https://autumnfish.cn/song/detail?ids=' + amll_data[i])
@@ -163,9 +167,9 @@
 
         function fetchDetails(ttml_id){
             var music_id = ttml_id;
-            const details_title = document.getElementById('modal-title');
-            const details_body = document.getElementById('modal-body');
-            const details_footer = document.getElementById('modal-footer');
+            const details_title = document.getElementById('m-title');
+            const details_body = document.getElementById('m-body');
+            const details_footer = document.getElementById('m-footer');
             details_title.innerHTML = music_id;
             details_body.innerHTML = music_id;
             details_footer.innerHTML = music_id;
@@ -234,12 +238,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <!-- 模态框内容 -->
-                    <div class="modal-body" id="m-body">
+                    <div class="modal-body">
+                        <div id="m-body"></div>
                         模态框内容..
                     </div>
                     <!-- 模态框底部 -->
                     <div class="modal-footer">
-                        <div id="m-foorer"></div>
+                        <div id="m-footer"></div>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
                     </div>
                 </div>
